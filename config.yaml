@@ -1,0 +1,9 @@
+# 配置文件
+# config file
+
+
+# 虚拟货币分析列表.
+# Cryptocurrency analysis list.
+coin_list: ['BTCUSDT','ETHUSDT','WLDUSDT','FETUSDT']
+
+
