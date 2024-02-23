@@ -5,7 +5,8 @@ import chart_display
 def main():
     # 获取数据
     try:
-        data_processing.get_klines_data()
+        # data_processing.get_klines_data()
+        data_processing.get_depth_data()
     except Exception as e:
         print(f"Error in data retrieval: {e}")
         return

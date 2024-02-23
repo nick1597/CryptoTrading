@@ -6,6 +6,7 @@ from binance.spot import Spot
 
 # Get the config
 config = ConfigManager()
+coin_list = config.get_config("coin_list")
 client = Spot()
 
 
@@ -17,7 +18,6 @@ def check_data_folder(file_path):
 
 # Get BTCUSDT last 1m candlestick data and store it as csv
 def get_klines_data():
-    coin_list = config.get_config("coin_list")
     for coin in coin_list:
         coin_data = client.klines(coin, "1m")
         first_candlestick = datetime.fromtimestamp(coin_data[0][0] / 1000)
@@ -33,6 +33,28 @@ def get_klines_data():
                 )
     return 1
 
+
+def get_depth_data():
+    for coin in coin_list:
+        depth_data = client.depth(coin)
+        first_candlestick = datetime.fromtimestamp(depth_data[0][0] / 1000)
+        name = first_candlestick.strftime("%Y-%m-%d")
+        check_data_folder("data/depth/" + coin + "/")
+        with open("data/depth/" + coin + "/" + name + ".csv", "w") as f:
+            f.write(
+                "消息时间,撮合引擎时间,买单价格,买单数量,卖单价格,卖单数量\n")
+            for depth in depth_data:
+                data_time = depth['E']
+                match_time = depth['T']
+                buy_price = depth['bids'][0]
+                buy_quantity = depth['bids'][1]
+                sell_price = depth['asks'][0]
+                sell_quantity = depth['asks'][1]
+                f.write(
+                    f"{data_time},{match_time},{buy_price},{buy_quantity},{sell_price},{sell_quantity}\n"
+                )
+
+    return 1
 
 def process_data():
     # get all csv files
